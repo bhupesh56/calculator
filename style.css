@@ -1,0 +1,35 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+.numpad{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    width: 350px;
+    margin: 0 auto;
+}
+
+.top,
+.middle,
+.bottom{
+    display: flex;
+    gap: 10px;
+    margin: 10px;
+}
+
+.middle{
+    flex-wrap: wrap;
+}
+
+.numDiv{
+    background-color: #414141;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+}
+
