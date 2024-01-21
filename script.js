@@ -1,71 +1,95 @@
 let buttons = Array.from(document.querySelectorAll("button"));
+let output = document.querySelector(".screen");
+let displayValue = result = 0;
+let num1 = num2 = "";
+let operator = "";
+let flag = 0;
 
 buttons.forEach(button => {
     button.addEventListener('click', function(event) {
       handleButtonClick(event.target.id);
-      console.log(event.target.id);
     });
   });
 
 function handleButtonClick(buttonId) {
+  let element = document.querySelector(`#${buttonId}`);
+  let numValue = element.textContent;
+  populateDisplay(element.textContent);
   switch (buttonId) {
     case "del":
-      console.log("Button 1 clicked!");
+      if(flag === 0){
+        num1 = num1.slice(0, -1);
+      }
+      else{
+        num2 = num2.slice(0, -1);
+      }
       break;
     case "ac":
-      console.log("Button 2 clicked!");
+      num1 = num2 = flag = 0;
       break;
     case "one":
-      console.log("Button 3 clicked!");
-      break;
     case "two":
-      console.log("Button 3 clicked!");
-      break;
     case "three":
-      console.log("Button 3 clicked!");
-      break;
     case "four":
-      console.log("Button 3 clicked!");
-      break;
     case "five":
-      console.log("Button 3 clicked!");
-      break;
     case "six":
-      console.log("Button 3 clicked!");
-      break;
     case "seven":
-      console.log("Button 3 clicked!");
-      break;
     case "eight":
-      console.log("Button 3 clicked!");
-      break;
     case "nine":
-      console.log("Button 3 clicked!");
-      break;
+    case "decimal":
     case "zero":
-      console.log("Button 3 clicked!");
+      if(flag === 0){
+        num1 = num1 + `${numValue}`;
+      }
+      else{
+        num2 = num2 + `${numValue}`;
+      }
       break;
     case "divide":
-      console.log("Button 3 clicked!");
+      operator = "/";
+      flag = 1;
       break;
     case "mul":
-      console.log("Button 3 clicked!");
+      operator = '*';
+      flag = 1;
       break;
     case "add":
-      console.log("Button 3 clicked!");
+      operator = '+';
+      flag = 1;
       break;
     case "sub":
-      console.log("Button 3 clicked!");
+      operator = '-';
+      flag = 1;
       break;
     case "equal":
-      console.log("Button 3 clicked!");
-      break;
-    case "decimal":
-      console.log("Button 3 clicked!");
+      populateDisplay(displayValue);
       break;
     default:
       console.log("Unknown button clicked!");
   }
+}
+
+
+
+function populateDisplay(variable){
+  if(variable === "DEL"){
+    output.textContent =  output.textContent.slice(0, -1);
+    return;
+  }
+  if(variable === "AC"){
+    output.textContent =  "";
+    return;
+  }
+  if(+(variable) >= 0 || +(variable) <= 9 || variable === "."){
+    if(flag){
+      output.textContent =  output.textContent + " " +`${variable}`;
+    }
+    else{
+      output.textContent =  output.textContent + `${variable}`;
+    }
+    return;
+  }
+  output.textContent =  output.textContent + " " +`${variable}`;
 }
 
 
