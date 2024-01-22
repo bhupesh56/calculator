@@ -1,5 +1,6 @@
 let buttons = Array.from(document.querySelectorAll("button"));
-let output = document.querySelector(".screen");
+let output = document.querySelector(".output");
+let input = document.querySelector(".input");
 let math = ["/", "+", "-", "*"];
 let numArr = [];
 let operator = "";
@@ -13,6 +14,11 @@ buttons.forEach(button => {
 
 function handleButtonClick(buttonId) {
   let text = document.querySelector(`#${buttonId}`).textContent;
+  handleOutput(buttonId, text);
+  populateDisplay(text);
+}
+
+function handleOutput(buttonId, text){
   switch (buttonId) {
     case "del":
       numArr.pop();
@@ -40,16 +46,19 @@ function handleButtonClick(buttonId) {
       populateDisplay(result(numArr));
       return;
     case "dot":
-      
+      numArr[i++] = "."
       break;
     default:
-      numArr[i++] = `${text}`;
+      if(+(text) > Number.MIN_VALUE){
+        numArr[i++] = `${text}`;
+      }
+      else{
+        populateDisplay("AC");
+        populateDisplay("ERROR!");
+      }
       break;
   }
-  populateDisplay(text);
 }
-
-
 function result(arr){
   let j = 0;
   let num1 = "";
@@ -115,4 +124,37 @@ function populateDisplay(text){
   
 }
 
+input.addEventListener("keydown", function(event){
+  event.preventDefault();
+  handleKeypress(event.key);
+})
+
+function handleKeypress(key){
+  if (+(key) > Number.MIN_VALUE) {
+    handleOutput(key);
+    populateDisplay(key);
+    }
+  else{
+    switch (key) {
+      case "Backspace":
+        handleOutput("del");
+        populateDisplay("DEL");
+        break;
+      case "/":
+      case "*":
+      case "+":
+      case "-":
+        handleOutput(key);
+        populateDisplay(key);
+        break;
+      case "Enter":
+        handleOutput("=");
+        populateDisplay("=");
+        break;
+      default:
+        alert("Not Supported");
+        break;
+    }
+  }
+}
 
