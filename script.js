@@ -40,7 +40,7 @@ function handleButtonClick(buttonId) {
       populateDisplay(result(numArr));
       return;
     case "dot":
-      
+      numArr[i++] = ".";
       break;
     default:
       numArr[i++] = `${text}`;
