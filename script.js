@@ -8,12 +8,13 @@ let i = 0;
 
 buttons.forEach(button => {
     button.addEventListener('click', function(event) {
-      handleButtonClick(event.target.id);
+      let text = document.querySelector(event.target.id);
+      handleButtonClick(event.target.id, text.textContent);
     });
   });
 
-function handleButtonClick(buttonId) {
-  let text = document.querySelector(`#${buttonId}`).textContent;
+function handleButtonClick(buttonId, text) {
+  console.log(`${buttonId}`);
   handleOutput(buttonId, text);
   populateDisplay(text);
 }
