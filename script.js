@@ -1,161 +1,119 @@
-let buttons = Array.from(document.querySelectorAll("button"));
-let output = document.querySelector(".output");
-let input = document.querySelector(".input");
-let math = ["/", "+", "-", "*"];
+const numpad = document.querySelector('.numpad');
+const output = document.querySelector(".output");
+const input = document.querySelector(".input");
 let numArr = [];
-let operator = "";
+let opArr = [];
 let i = 0;
+opArr[0] = "+";
+numArr[0] = 0;
+let result = 0;
+let flag = 0;
 
-buttons.forEach(button => {
-    button.addEventListener('click', function(event) {
-      let text = document.querySelector(event.target.id);
-      handleButtonClick(event.target.id, text.textContent);
-    });
-  });
-
-function handleButtonClick(buttonId, text) {
-  console.log(`${buttonId}`);
-  handleOutput(buttonId, text);
-  populateDisplay(text);
-}
-
-function handleOutput(buttonId, text){
-  switch (buttonId) {
-    case "del":
-      numArr.pop();
-      i--;
-      break;
-    case "ac":
-      numArr = [];
-      operator= "";
-      i = 0;
-      break;
-    case "divide":
-      numArr[i++] = "/";
-      break;
-    case "mul":
-      numArr[i++] = "*";
-      break;
-    case "add":
-      numArr[i++] = "+";
-      break;
-    case "sub":
-      numArr[i++] = "-";
-      break;
-    case "equal":
-      populateDisplay("AC");
-      populateDisplay(result(numArr));
-      return;
-    case "dot":
-      numArr[i++] = "."
-      break;
-    default:
-      if(+(text) > Number.MIN_VALUE){
-        numArr[i++] = `${text}`;
-      }
-      else{
-        populateDisplay("AC");
-        populateDisplay("ERROR!");
-      }
-      break;
-  }
-}
-function result(arr){
-  let j = 0;
-  let num1 = "";
-  let num2 = "";
-  while(j < numArr.length){
-    if(math.includes(arr[j])){
-      if(operator){
-        num1 = operate(operator, num1, num2);
-        num2 = "";
-      }
-      operator = arr[j];
-    }
-    else{
-      if(!operator){
-        num1 += arr[j];
-      }
-      else{
-        num2 += arr[j];
-      }
-    }
-    j++;
-  }
-  return operate(operator, num1, num2);
-}
-
-function operate(operator, result, num){
-  result = +(result);
-  num = +(num);
-  switch (operator) {
-    case "+":
-      return result + num;
-    case "-":
-      return result - num;
-    case "*":
-      return result * num;
-    case "/":
-      return result / num;
-    default:
-      break;
-  }
-}
-
-function populateDisplay(text){
-  switch (text) {
-    case "DEL":
-      output.textContent = (output.textContent.at(-2) === " ") ? 
-         output.textContent.slice(0, -2) : 
-         output.textContent = output.textContent.slice(0, -1);
-      return;
-    case "AC":
-      output.textContent = "";
-      return;
-    case "+":
-    case "-":
-    case "×":
-    case "÷":
-      output.textContent = `${output.textContent} ${text} `;
-      return;
-    default:
-      output.textContent = output.textContent + text;
-      return;
-  }
-  
-}
-
-input.addEventListener("keydown", function(event){
-  event.preventDefault();
-  handleKeypress(event.key);
+numpad.addEventListener('click', function(event){
+  let text = document.getElementById(event.target.id);
+  console.log(text);
+  handleButtonClick(event.target.id, text.textContent);
+  populateDisplay(event.target.id, text.textContent);
 })
 
-function handleKeypress(key){
-  if (+(key) > Number.MIN_VALUE) {
-    handleOutput(key);
-    populateDisplay(key);
+function handleButtonClick(id, text){
+  const element = document.getElementById(id);
+  const eleClass = element.classList;
+  const eleText = element.textContent;
+  if(eleClass.contains("number")){
+    if(!(numArr[i])){
+      numArr[i] = +(text);
+
     }
-  else{
-    switch (key) {
-      case "Backspace":
-        handleOutput("del");
-        populateDisplay("DEL");
+    else{
+      numArr[i] = +(numArr[i] + text);
+    } 
+  }
+  else if(eleClass.contains("math")){
+    i++;
+    switch (id) {
+      case "mul":
+        opArr.push("*");
         break;
-      case "/":
-      case "*":
-      case "+":
-      case "-":
-        handleOutput(key);
-        populateDisplay(key);
+      case "divide":
+        opArr.push("/");
         break;
-      case "Enter":
-        handleOutput("=");
-        populateDisplay("=");
+      case "add":
+        opArr.push("+");
+        break;
+      case "sub":
+        opArr.push("-");
         break;
       default:
-        alert("Not Supported");
+        console.log("ERROR");
         break;
     }
   }
+  else if(id == "del"){
+    if(numArr[i] > 0){
+      numArr[i] = Math.floor(numArr[i] / 10);
+      if(numArr[i] == 0){
+        numArr.pop();
+      }
+    }
+    else if(numArr[i] == 0){
+      numArr.pop();
+    }
+    else if(!(numArr[i])){
+      opArr.pop();
+      i--;
+      if(opArr.length === 0){
+        opArr.push("+");
+      }
+    }
+  }
+  else if(id == "ac"){
+     numArr = [];
+     opArr = [];
+     i = 0;
+     opArr[0] = "+";
+     numArr[0] = 0;
+     result = 0;
+  }
+  else if(id == "equal"){
+    fullResult();
+    console.log(result);
+    numArr = [];
+    opArr = [];
+    i = 0;
+    opArr[0] = "+";
+    numArr[0] = 0;
+    numArr = result;
+    result = 0;
+  }
+}
+
+function fullResult() {
+  for(let j = 0; j < numArr.length; j++){
+    result = calcResult(result, numArr[j], opArr[j]);
+  }
+}
+
+function calcResult(num1, num2, operator){
+  switch (operator){
+    case "+":
+      return num1 + num2;
+      break;
+    case "-":
+      return num1 - num2;
+      break;
+    case "*":
+      return num1 * num2;
+      break;
+    case "/":
+      return num1 / num2;
+      break;
+    default:
+      console.log("ERROR");
+      break;
+  }
+}
+function populateDisplay(id, text){
+  console.log(text);
 }
 
