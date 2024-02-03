@@ -1,5 +1,5 @@
 const numpad = document.querySelector('.numpad');
-const output = document.querySelector(".output");
+const output = document.querySelector(".content");
 const input = document.querySelector(".input");
 let numArr = [];
 let opArr = [];
@@ -8,12 +8,25 @@ opArr[0] = "+";
 numArr[0] = 0;
 let result = 0;
 let flag = 0;
-
+let temp = 0;
+let touchstart = true;
 numpad.addEventListener('click', function(event){
+  if(!(touchstart)){
+    event.preventDefault ();
+    touchstart = true;
+    return;
+  }
   let text = document.getElementById(event.target.id);
-  console.log(text);
   handleButtonClick(event.target.id, text.textContent);
-  populateDisplay(event.target.id, text.textContent);
+  display(event.target.id, text.textContent);
+  console.log(`Time taken: ${elapsedTime} milliseconds`);
+})
+
+numpad.addEventListener('touchstart', function(event){
+  touchstart = false;
+  let text = document.getElementById(event.target.id);
+  handleButtonClick(event.target.id, text.textContent);
+  display(event.target.id, text.textContent);
 })
 
 function handleButtonClick(id, text){
@@ -21,6 +34,11 @@ function handleButtonClick(id, text){
   const eleClass = element.classList;
   const eleText = element.textContent;
   if(eleClass.contains("number")){
+    if(flag == 1){
+      flag = 0;
+      display("ac", "AC");
+      handleButtonClick("ac", "AC");
+    }
     if(!(numArr[i])){
       numArr[i] = +(text);
 
@@ -30,6 +48,7 @@ function handleButtonClick(id, text){
     } 
   }
   else if(eleClass.contains("math")){
+    flag = 0;
     i++;
     switch (id) {
       case "mul":
@@ -62,6 +81,7 @@ function handleButtonClick(id, text){
     else if(!(numArr[i])){
       opArr.pop();
       i--;
+      removeDisplay(-2);
       if(opArr.length === 0){
         opArr.push("+");
       }
@@ -78,13 +98,14 @@ function handleButtonClick(id, text){
   else if(id == "equal"){
     fullResult();
     console.log(result);
+    temp = result;
     numArr = [];
     opArr = [];
     i = 0;
     opArr[0] = "+";
-    numArr[0] = 0;
-    numArr = result;
+    numArr[0] = result;
     result = 0;
+    flag = 1;
   }
 }
 
@@ -113,7 +134,27 @@ function calcResult(num1, num2, operator){
       break;
   }
 }
-function populateDisplay(id, text){
-  console.log(text);
+function display(id, text){
+  const element = document.getElementById(id);
+  const eleClass = element.classList;
+  const eleText = element.textContent;
+  if(eleClass.contains("number")){
+    output.textContent = output.textContent + text;
+  }
+  else if(eleClass.contains("math")){
+    output.textContent = output.textContent + " " + text + " ";
+  }
+  else if(id == "del"){
+    output.textContent = output.textContent.slice(0,-1);
+  }
+  else if(id == "ac"){
+    output.textContent = "";
+  }
+  else if(id =="equal"){
+    output.textContent = temp;
+  }
 }
 
+function removeDisplay(index){
+  output.textContent = output.textContent.slice(0, index);
+}
