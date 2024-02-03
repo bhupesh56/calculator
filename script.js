@@ -1,6 +1,5 @@
 const numpad = document.querySelector('.numpad');
-const output = document.querySelector(".content");
-const input = document.querySelector(".input");
+const output = document.querySelector(".screen");
 let numArr = [];
 let opArr = [];
 let i = 0;
@@ -19,7 +18,6 @@ numpad.addEventListener('click', function(event){
   let text = document.getElementById(event.target.id);
   handleButtonClick(event.target.id, text.textContent);
   display(event.target.id, text.textContent);
-  console.log(`Time taken: ${elapsedTime} milliseconds`);
 })
 
 numpad.addEventListener('touchstart', function(event){
@@ -32,7 +30,6 @@ numpad.addEventListener('touchstart', function(event){
 function handleButtonClick(id, text){
   const element = document.getElementById(id);
   const eleClass = element.classList;
-  const eleText = element.textContent;
   if(eleClass.contains("number")){
     if(flag == 1){
       flag = 0;
@@ -97,7 +94,7 @@ function handleButtonClick(id, text){
   }
   else if(id == "equal"){
     fullResult();
-    console.log(result);
+    result = formatNumber(result);
     temp = result;
     numArr = [];
     opArr = [];
@@ -107,7 +104,20 @@ function handleButtonClick(id, text){
     result = 0;
     flag = 1;
   }
+  else if(id == "dot"){
+    alert("No decimal functionality yet.");
+  }
 }
+
+function formatNumber(number) {
+  if (Number.isInteger(number)) {
+      return number;
+  } else {
+      let formattedNumber = number.toFixed(4);
+      return formattedNumber;
+  }
+}
+
 
 function fullResult() {
   for(let j = 0; j < numArr.length; j++){
@@ -134,10 +144,10 @@ function calcResult(num1, num2, operator){
       break;
   }
 }
+
 function display(id, text){
   const element = document.getElementById(id);
   const eleClass = element.classList;
-  const eleText = element.textContent;
   if(eleClass.contains("number")){
     output.textContent = output.textContent + text;
   }
