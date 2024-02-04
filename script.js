@@ -9,6 +9,8 @@ let result = 0;
 let flag = 0;
 let temp = 0;
 let touchstart = true;
+let opflag = true;
+
 numpad.addEventListener('click', function(event){
   if(!(touchstart)){
     event.preventDefault ();
@@ -31,6 +33,7 @@ function handleButtonClick(id, text){
   const element = document.getElementById(id);
   const eleClass = element.classList;
   if(eleClass.contains("number")){
+    opflag = false;
     if(flag == 1){
       flag = 0;
       display("ac", "AC");
@@ -45,8 +48,13 @@ function handleButtonClick(id, text){
     } 
   }
   else if(eleClass.contains("math")){
+    if(opflag){
+      opArr.pop();
+    }
     flag = 0;
-    i++;
+    if(!(opflag)){
+      i++;
+    }
     switch (id) {
       case "mul":
         opArr.push("*");
@@ -152,6 +160,12 @@ function display(id, text){
     output.textContent = output.textContent + text;
   }
   else if(eleClass.contains("math")){
+    if(opflag){
+      removeDisplay(-3);
+    }
+    if(!(opflag)){
+      opflag = true;
+    }
     output.textContent = output.textContent + " " + text + " ";
   }
   else if(id == "del"){
