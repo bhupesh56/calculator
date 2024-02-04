@@ -84,6 +84,9 @@ function handleButtonClick(id, text){
       numArr.pop();
     }
     else if(!(numArr[i])){
+      if(opflag){
+        opflag = false;
+      }
       opArr.pop();
       i--;
       removeDisplay(-2);
